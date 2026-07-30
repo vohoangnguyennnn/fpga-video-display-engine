@@ -1,0 +1,44 @@
+# Third-party study material is intentionally kept outside project history.
+/refs/
+# Local review notes
+/docx.txt
+
+# Python and test caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Simulator output
+sim_build/
+obj_dir/
+work/
+*.vcd
+*.fst
+*.wlf
+*.log
+
+# Vivado generated projects and products
+.Xil/
+*.jou
+*.str
+*.dcp
+*.bit
+*.bin
+*.ltx
+*.xpr
+*.runs/
+*.cache/
+*.gen/
+*.hw/
+*.ip_user_files/
+*.sim/
+
+# Local tools and editors
+.venv/
+.env
+.idea/
+.vscode/
+*~
+*.swp
