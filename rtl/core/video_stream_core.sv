@@ -46,6 +46,7 @@ module video_stream_core
     logic input_path_open;
     logic recovery_request;
     logic output_safe_to_flush;
+    logic output_safe_to_flush_q;
     logic pipeline_flush;
     logic pipeline_aresetn;
     logic input_transfer;
@@ -132,7 +133,7 @@ module video_stream_core
     // source holds that SOF while recovery preserves any already-stalled output.
     assign recovery_request = aresetn && frame_in_flight_q && tracker_in_frame && s_axis_tvalid && s_axis_tuser;
     assign output_safe_to_flush = !m_axis_tvalid || m_axis_tready;
-    assign pipeline_flush = aresetn && (recovery_pending_q || recovery_request) && output_safe_to_flush;
+    assign pipeline_flush = aresetn && (recovery_pending_q || recovery_request) && output_safe_to_flush_q;
     assign pipeline_aresetn = aresetn && !pipeline_flush;
 
     assign tracker_input_valid = s_axis_tvalid && input_path_open && !recovery_pending_q && !recovery_request;
@@ -155,12 +156,14 @@ module video_stream_core
 
     always_ff @(posedge aclk) begin
         if (!aresetn) begin
+            output_safe_to_flush_q <= 1'b1;
             active_mode_q <= 2'd0;
             active_threshold_q <= 8'd0;
             frame_in_flight_q <= 1'b0;
             protocol_error_q <= 1'b0;
             recovery_pending_q <= 1'b0;
         end else begin
+            output_safe_to_flush_q <= output_safe_to_flush;
             protocol_error_q <= protocol_error_q || tracker_protocol_error || recovery_request;
 
             if (pipeline_flush) begin
