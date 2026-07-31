@@ -28,27 +28,27 @@ module video_clock_reset (
     assign domain_reset_request = reset_async || !mmcm_locked;
 
     video_clk_wiz u_video_clk_wiz (
-        .clk_in1     (clk_50m),
-        .reset       (reset_async),
-        .locked      (mmcm_locked),
-        .pix_clk     (pix_clk),
-        .tmds_clk_5x (tmds_clk_5x)
+        .clk_in1(clk_50m),
+        .reset(reset_async),
+        .locked(mmcm_locked),
+        .pix_clk(pix_clk),
+        .tmds_clk_5x(tmds_clk_5x)
     );
 
     reset_sync #(
         .RELEASE_STAGES(4)
     ) u_pix_reset_sync (
-        .clk         (pix_clk),
-        .reset_async (domain_reset_request),
-        .reset_out   (pix_reset)
+        .clk(pix_clk),
+        .reset_async(domain_reset_request),
+        .reset_out(pix_reset)
     );
 
     reset_sync #(
         .RELEASE_STAGES(4)
     ) u_tmds_reset_sync (
-        .clk         (tmds_clk_5x),
-        .reset_async (domain_reset_request),
-        .reset_out   (tmds_reset)
+        .clk(tmds_clk_5x),
+        .reset_async(domain_reset_request),
+        .reset_out(tmds_reset)
     );
 
 endmodule
