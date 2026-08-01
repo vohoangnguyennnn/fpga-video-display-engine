@@ -36,7 +36,7 @@ work/
 *.sim/
 
 # Local tools and editors
-.venv/
+.venv*/
 .env
 .idea/
 .vscode/
