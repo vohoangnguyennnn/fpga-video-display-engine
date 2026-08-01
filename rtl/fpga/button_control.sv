@@ -1,6 +1,6 @@
 // Pixel-domain board-button control.
 //
-// The three active-high button inputs are asynchronous to pix_clk. Each input
+// The two active-high button inputs are asynchronous to pix_clk. Each input
 // is first passed through a two-flop synchronizer, then accepted only after it
 // has remained unchanged for DEBOUNCE_CYCLES consecutive pixel-clock edges.
 // A held button produces one action; it must be released before another press.
@@ -11,23 +11,24 @@
 
 module button_control #(
     // 20 ms at the nominal 74.21875 MHz 720p pixel clock.
-    parameter integer DEBOUNCE_CYCLES = 1_484_375
+    parameter integer DEBOUNCE_CYCLES = 1_484_375,
+    // Addition is intentionally modulo 256, so the threshold returns to zero
+    // after the last value in the selected step sequence.
+    parameter logic [7:0] THRESHOLD_STEP = 8'd1
 ) (
     input logic pix_clk,
     input logic pix_reset,
 
     input logic btn_mode,
     input logic btn_threshold_up,
-    input logic btn_threshold_down,
 
     output logic [1:0] cfg_mode,
     output logic [7:0] cfg_threshold
 );
 
-    localparam integer BUTTON_COUNT = 3;
+    localparam integer BUTTON_COUNT = 2;
     localparam integer MODE_BUTTON = 0;
     localparam integer THRESHOLD_UP_BUTTON = 1;
-    localparam integer THRESHOLD_DOWN_BUTTON = 2;
     localparam integer COUNTER_WIDTH = (DEBOUNCE_CYCLES <= 1) ? 1 : $clog2(DEBOUNCE_CYCLES);
     localparam logic [COUNTER_WIDTH-1:0] DEBOUNCE_LAST = COUNTER_WIDTH'(DEBOUNCE_CYCLES - 1);
 
@@ -48,11 +49,12 @@ module button_control #(
     initial begin
         assert (DEBOUNCE_CYCLES >= 1)
             else $fatal(1, "button_control DEBOUNCE_CYCLES must be at least 1");
+        assert (THRESHOLD_STEP != 8'd0)
+            else $fatal(1, "button_control THRESHOLD_STEP must be nonzero");
     end
 
     assign button_async[MODE_BUTTON] = btn_mode;
     assign button_async[THRESHOLD_UP_BUTTON] = btn_threshold_up;
-    assign button_async[THRESHOLD_DOWN_BUTTON] = btn_threshold_down;
     assign button_press = button_debounced_q & ~button_debounced_d_q;
 
     // Synchronize the raw mechanical inputs into the pixel-clock domain.
@@ -106,17 +108,8 @@ module button_control #(
                 cfg_mode <= cfg_mode + 1'b1;
             end
 
-            // Opposing simultaneous presses cancel. Otherwise adjustment is
-            // saturating over the complete unsigned 8-bit threshold range.
-            if (button_press[THRESHOLD_UP_BUTTON] && !button_press[THRESHOLD_DOWN_BUTTON]) begin
-                if (cfg_threshold != 8'hff) begin
-                    cfg_threshold <= cfg_threshold + 1'b1;
-                end
-            end else if (button_press[THRESHOLD_DOWN_BUTTON]
-                && !button_press[THRESHOLD_UP_BUTTON]) begin
-                if (cfg_threshold != 8'h00) begin
-                    cfg_threshold <= cfg_threshold - 1'b1;
-                end
+            if (button_press[THRESHOLD_UP_BUTTON]) begin
+                cfg_threshold <= cfg_threshold + THRESHOLD_STEP;
             end
         end
     end
