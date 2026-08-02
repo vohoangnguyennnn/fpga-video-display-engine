@@ -7,8 +7,10 @@
 //   reset        = active high
 //   locked       = enabled
 //
-// The generated clocks have an exact 5:1 relationship. Each domain remains in
-// reset until the MMCM has stayed locked for four edges of that domain.
+// The generated clocks have an exact 5:1 relationship. Functional board logic
+// and OSERDESE2 CLKDIV state use pix_reset, which remains asserted until the
+// synchronized MMCM-lock request has been clear for four pixel-clock edges.
+// There is no independent fabric state clocked only by tmds_clk_5x.
 
 module video_clock_reset (
     input logic clk_50m,
@@ -16,8 +18,7 @@ module video_clock_reset (
 
     output logic pix_clk,
     output logic tmds_clk_5x,
-    output logic pix_reset,
-    output logic tmds_reset
+    output logic pix_reset
 );
 
     logic mmcm_locked;
@@ -41,14 +42,6 @@ module video_clock_reset (
         .clk(pix_clk),
         .reset_async(domain_reset_request),
         .reset_out(pix_reset)
-    );
-
-    reset_sync #(
-        .RELEASE_STAGES(4)
-    ) u_tmds_reset_sync (
-        .clk(tmds_clk_5x),
-        .reset_async(domain_reset_request),
-        .reset_out(tmds_reset)
     );
 
 endmodule

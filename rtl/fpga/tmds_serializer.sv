@@ -8,7 +8,6 @@ module tmds_serializer (
     input logic pix_clk,
     input logic tmds_clk_5x,
     input logic pix_reset,
-    input logic tmds_reset,
 
     input logic [9:0] tmds_word,
 
@@ -16,15 +15,9 @@ module tmds_serializer (
     output logic tmds_n
 );
 
-    logic serializer_reset;
     logic cascade_data_1;
     logic cascade_data_2;
     logic serial_data;
-
-    // OSERDESE2 internally retimes RST into both clock domains. Keeping reset
-    // asserted until both external domain conditioners release also guarantees
-    // a pulse longer than one CLKDIV cycle.
-    assign serializer_reset = pix_reset || tmds_reset;
 
     OSERDESE2 #(
         .DATA_RATE_OQ("DDR"),
@@ -58,7 +51,9 @@ module tmds_serializer (
         .D7(tmds_word[6]),
         .D8(tmds_word[7]),
         .OCE(1'b1),
-        .RST(serializer_reset),
+        // RST setup is timed against CLKDIV. Drive it only from the reset
+        // conditioner that releases synchronously to that clock domain.
+        .RST(pix_reset),
         .SHIFTIN1(cascade_data_1),
         .SHIFTIN2(cascade_data_2),
         .T1(1'b0),
@@ -101,7 +96,7 @@ module tmds_serializer (
         .D7(1'b0),
         .D8(1'b0),
         .OCE(1'b1),
-        .RST(serializer_reset),
+        .RST(pix_reset),
         .SHIFTIN1(1'b0),
         .SHIFTIN2(1'b0),
         .T1(1'b0),
