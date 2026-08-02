@@ -3,10 +3,9 @@
 // Physical user I/O follows the reviewed board schematic:
 //   K1 -> key_mode_n
 //   K2 -> key_threshold_up_n
-//   K3 (schematic net RESET) -> key_threshold_down_n
-// All three keys and both user LEDs are active low. K3 is intentionally used
-// as a configuration key; startup and clock-loss reset comes from MMCM LOCKED
-// and the per-domain reset conditioners in video_clock_reset.
+// K3 is the board hardware-reset key, not a user-I/O FPGA pin. K2 cycles the
+// threshold through 0, 32, ..., 224, then wraps to 0. Both exposed user keys
+// and both user LEDs are active low.
 //
 // HDMI lane mapping follows the DVI convention:
 //   data[0] = blue + {VSYNC, HSYNC} control
@@ -20,7 +19,6 @@ module top #(
 
     input logic key_mode_n,
     input logic key_threshold_up_n,
-    input logic key_threshold_down_n,
 
     output logic [2:0] hdmi_data_p,
     output logic [2:0] hdmi_data_n,
@@ -93,13 +91,13 @@ module top #(
     );
 
     button_control #(
-        .DEBOUNCE_CYCLES(BUTTON_DEBOUNCE_CYCLES)
+        .DEBOUNCE_CYCLES(BUTTON_DEBOUNCE_CYCLES),
+        .THRESHOLD_STEP(8'd32)
     ) u_button_control (
         .pix_clk,
         .pix_reset,
         .btn_mode(!key_mode_n),
         .btn_threshold_up(!key_threshold_up_n),
-        .btn_threshold_down(!key_threshold_down_n),
         .cfg_mode,
         .cfg_threshold
     );
