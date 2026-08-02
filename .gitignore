@@ -20,6 +20,7 @@ work/
 *.log
 
 # Vivado generated projects and products
+/build/
 .Xil/
 *.jou
 *.str
