@@ -13,6 +13,8 @@
 #   data[2] = red
 # =============================================================================
 
+create_clock -name clk_50m -period 20.000 [get_ports clk_50m]
+
 # FPGA configuration bank voltage.
 set_property CONFIG_VOLTAGE 3.3 [current_design]
 set_property CFGBVS VCCO [current_design]
