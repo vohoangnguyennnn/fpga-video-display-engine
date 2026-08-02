@@ -118,10 +118,7 @@ module frame_coord_tracker_tb;
                 check(m_axis_payload.sof == sof, "SOF metadata mismatch");
                 check(m_axis_payload.eol == eol, "EOL metadata mismatch");
                 check(m_axis_payload.eof == expected_eof, "EOF metadata mismatch");
-                check(
-                    m_axis_payload.border == expected_border,
-                    "border metadata mismatch"
-                );
+                check(m_axis_payload.border == expected_border, "border metadata mismatch");
             end
 
             @(posedge aclk);
