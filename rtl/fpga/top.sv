@@ -38,7 +38,6 @@ module top #(
     logic pix_clk;
     logic tmds_clk_5x;
     logic pix_reset;
-    logic tmds_reset;
     logic core_aresetn;
 
     logic [1:0] cfg_mode;
@@ -90,8 +89,7 @@ module top #(
         .reset_async(1'b0),
         .pix_clk,
         .tmds_clk_5x,
-        .pix_reset,
-        .tmds_reset
+        .pix_reset
     );
 
     button_control #(
@@ -212,7 +210,6 @@ module top #(
         .pix_clk,
         .tmds_clk_5x,
         .pix_reset,
-        .tmds_reset,
         .tmds_word(tmds_blue),
         .tmds_p(hdmi_data_p[0]),
         .tmds_n(hdmi_data_n[0])
@@ -222,7 +219,6 @@ module top #(
         .pix_clk,
         .tmds_clk_5x,
         .pix_reset,
-        .tmds_reset,
         .tmds_word(tmds_green),
         .tmds_p(hdmi_data_p[1]),
         .tmds_n(hdmi_data_n[1])
@@ -232,7 +228,6 @@ module top #(
         .pix_clk,
         .tmds_clk_5x,
         .pix_reset,
-        .tmds_reset,
         .tmds_word(tmds_red),
         .tmds_p(hdmi_data_p[2]),
         .tmds_n(hdmi_data_n[2])
@@ -244,7 +239,6 @@ module top #(
         .pix_clk,
         .tmds_clk_5x,
         .pix_reset,
-        .tmds_reset,
         .tmds_word(TMDS_CLOCK_WORD),
         .tmds_p(hdmi_clk_p),
         .tmds_n(hdmi_clk_n)
