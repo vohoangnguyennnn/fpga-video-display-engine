@@ -59,21 +59,27 @@ INTEGRATION_TARGETS := \
 	test-video-stream-core \
 	test-top
 
-.PHONY: help lint test test-all test-rtl test-unit test-integration \
-	test-model test-xsim $(UNIT_TARGETS) $(INTEGRATION_TARGETS) \
+.PHONY: help ci lint test test-all test-rtl test-unit test-integration \
+	test-model test-cocotb test-xsim vivado \
+	$(UNIT_TARGETS) $(INTEGRATION_TARGETS) \
 	test-tmds-serializer clean
 
 help:
 	@echo "Available targets:"
+	@echo "  make ci                Run the checks used by GitHub Actions"
 	@echo "  make lint              Lint the complete RTL hierarchy"
 	@echo "  make test-unit         Run portable SystemVerilog unit tests"
 	@echo "  make test-integration  Run core and board integration tests"
 	@echo "  make test-rtl          Run lint plus all portable RTL tests"
 	@echo "  make test-model        Run the Python reference-model tests"
+	@echo "  make test-cocotb       Run the core cocotb smoke tests"
 	@echo "  make test-xsim         Run the Xilinx UNISIM serializer test"
 	@echo "  make test              Run portable RTL and model tests"
 	@echo "  make test-all          Run portable tests plus Xsim"
+	@echo "  make vivado            Build the FPGA bitstream locally with Vivado"
 	@echo "  make clean             Remove simulator build products"
+
+ci: test-rtl test-model test-cocotb
 
 lint:
 	verilator --lint-only --sv --timing --timescale 1ns/1ps -Wall \
@@ -94,7 +100,19 @@ test-integration: $(INTEGRATION_TARGETS)
 test-model:
 	$(PYTHON) -m unittest discover -s tb/model -p 'test_*.py'
 
+test-cocotb:
+	$(PYTHON) tb/cocotb/run.py --sim verilator
+
 test-xsim: test-tmds-serializer
+
+vivado:
+	@command -v vivado >/dev/null 2>&1 || \
+		(echo "Vivado is not on PATH; source the Vivado environment first" && false)
+	mkdir -p build/vivado
+	vivado -mode batch \
+		-source fpga/vivado/build.tcl \
+		-log build/vivado/vivado.log \
+		-journal build/vivado/vivado.jou
 
 define run_sv_test
 	mkdir -p $(BUILD_ROOT)/$(1)
