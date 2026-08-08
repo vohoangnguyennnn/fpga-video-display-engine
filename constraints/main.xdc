@@ -63,21 +63,21 @@ set_property SLEW SLOW \
 # HDMI/DVI TMDS output
 # =============================================================================
 
-# Lane 0: blue channel and HSYNC/VSYNC control symbols.
-set_property PACKAGE_PIN J20 [get_ports {hdmi_data_p[0]}]
-set_property PACKAGE_PIN J21 [get_ports {hdmi_data_n[0]}]
+# Lane 0: blue channel and HSYNC/VSYNC control symbols (HDMI D0).
+set_property PACKAGE_PIN K21 [get_ports {hdmi_data_p[0]}]
+set_property PACKAGE_PIN K22 [get_ports {hdmi_data_n[0]}]
 
-# Lane 1: green channel.
-set_property PACKAGE_PIN L19 [get_ports {hdmi_data_p[1]}]
-set_property PACKAGE_PIN L20 [get_ports {hdmi_data_n[1]}]
+# Lane 1: green channel (HDMI D1).
+set_property PACKAGE_PIN J20 [get_ports {hdmi_data_p[1]}]
+set_property PACKAGE_PIN J21 [get_ports {hdmi_data_n[1]}]
 
-# Lane 2: red channel.
-set_property PACKAGE_PIN H20 [get_ports {hdmi_data_p[2]}]
-set_property PACKAGE_PIN G20 [get_ports {hdmi_data_n[2]}]
+# Lane 2: red channel (HDMI D2).
+set_property PACKAGE_PIN G17 [get_ports {hdmi_data_p[2]}]
+set_property PACKAGE_PIN G18 [get_ports {hdmi_data_n[2]}]
 
 # Forwarded pixel clock.
-set_property PACKAGE_PIN K18 [get_ports hdmi_clk_p]
-set_property PACKAGE_PIN K19 [get_ports hdmi_clk_n]
+set_property PACKAGE_PIN L19 [get_ports hdmi_clk_p]
+set_property PACKAGE_PIN L20 [get_ports hdmi_clk_n]
 
 set_property IOSTANDARD TMDS_33 \
     [get_ports {
