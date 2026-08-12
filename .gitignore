@@ -18,6 +18,7 @@ work/
 *.fst
 *.wlf
 *.log
+transcript
 
 # Vivado generated projects and products
 /build/
