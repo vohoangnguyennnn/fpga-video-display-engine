@@ -4,7 +4,7 @@
     "xci_name": "video_clk_wiz",
     "component_reference": "xilinx.com:ip:clk_wiz:6.0",
     "ip_revision": "14",
-    "gen_directory": "../../../../video_processing.gen/sources_1/ip/video_clk_wiz",
+    "gen_directory": "../../../../dissplay_engine_video.gen/sources_1/ip/video_clk_wiz",
     "parameters": {
       "component_parameters": {
         "Component_Name": [ { "value": "video_clk_wiz", "resolve_type": "user", "usage": "all" } ],
@@ -114,7 +114,7 @@
         "CLKOUT5_MATCHED_ROUTING": [ { "value": "false", "resolve_type": "user", "format": "bool", "usage": "all" } ],
         "CLKOUT6_MATCHED_ROUTING": [ { "value": "false", "resolve_type": "user", "format": "bool", "usage": "all" } ],
         "CLKOUT7_MATCHED_ROUTING": [ { "value": "false", "resolve_type": "user", "format": "bool", "usage": "all" } ],
-        "PRIM_SOURCE": [ { "value": "Single_ended_clock_capable_pin", "resolve_type": "user", "usage": "all" } ],
+        "PRIM_SOURCE": [ { "value": "No_buffer", "value_src": "user", "resolve_type": "user", "usage": "all" } ],
         "CLKOUT1_DRIVES": [ { "value": "BUFG", "resolve_type": "user", "usage": "all" } ],
         "CLKOUT2_DRIVES": [ { "value": "BUFG", "resolve_type": "user", "usage": "all" } ],
         "CLKOUT3_DRIVES": [ { "value": "BUFG", "resolve_type": "user", "usage": "all" } ],
@@ -313,7 +313,7 @@
         "C_SECONDARY_IN_FREQ": [ { "value": "100.000", "resolve_type": "generated", "format": "float", "usage": "all" } ],
         "C_SECONDARY_IN_TIMEPERIOD": [ { "value": "10.000", "resolve_type": "generated", "format": "float", "usage": "all" } ],
         "C_FEEDBACK_SOURCE": [ { "value": "FDBK_AUTO", "resolve_type": "generated", "usage": "all" } ],
-        "C_PRIM_SOURCE": [ { "value": "Single_ended_clock_capable_pin", "resolve_type": "generated", "usage": "all" } ],
+        "C_PRIM_SOURCE": [ { "value": "No_buffer", "resolve_type": "generated", "usage": "all" } ],
         "C_PHASESHIFT_MODE": [ { "value": "WAVEFORM", "resolve_type": "generated", "usage": "all" } ],
         "C_SECONDARY_SOURCE": [ { "value": "Single_ended_clock_capable_pin", "resolve_type": "generated", "usage": "all" } ],
         "C_CLKFB_IN_SIGNALING": [ { "value": "SINGLE", "resolve_type": "generated", "usage": "all" } ],
@@ -575,12 +575,12 @@
         "C_CLKOUT6_ACTUAL_FREQ": [ { "value": "100.000", "resolve_type": "generated", "usage": "all" } ],
         "C_M_MAX": [ { "value": "64.000", "resolve_type": "generated", "format": "float", "usage": "all" } ],
         "C_M_MIN": [ { "value": "2.000", "resolve_type": "generated", "format": "float", "usage": "all" } ],
-        "C_D_MAX": [ { "value": "80.000", "resolve_type": "generated", "format": "float", "usage": "all" } ],
+        "C_D_MAX": [ { "value": "93.000", "resolve_type": "generated", "format": "float", "usage": "all" } ],
         "C_D_MIN": [ { "value": "1.000", "resolve_type": "generated", "format": "float", "usage": "all" } ],
         "C_O_MAX": [ { "value": "128.000", "resolve_type": "generated", "format": "float", "usage": "all" } ],
         "C_O_MIN": [ { "value": "1.000", "resolve_type": "generated", "format": "float", "usage": "all" } ],
         "C_VCO_MIN": [ { "value": "600.000", "resolve_type": "generated", "format": "float", "usage": "all" } ],
-        "C_VCO_MAX": [ { "value": "1200.000", "resolve_type": "generated", "format": "float", "usage": "all" } ]
+        "C_VCO_MAX": [ { "value": "1440.000", "resolve_type": "generated", "format": "float", "usage": "all" } ]
       },
       "project_parameters": {
         "ARCHITECTURE": [ { "value": "artix7" } ],
@@ -592,7 +592,7 @@
         "PREFHDL": [ { "value": "VERILOG" } ],
         "SILICON_REVISION": [ { "value": "" } ],
         "SIMULATOR_LANGUAGE": [ { "value": "MIXED" } ],
-        "SPEEDGRADE": [ { "value": "-1" } ],
+        "SPEEDGRADE": [ { "value": "-2" } ],
         "STATIC_POWER": [ { "value": "" } ],
         "TEMPERATURE_GRADE": [ { "value": "" } ]
       },
@@ -600,7 +600,7 @@
         "IPCONTEXT": [ { "value": "IP_Flow" } ],
         "IPREVISION": [ { "value": "14" } ],
         "MANAGED": [ { "value": "TRUE" } ],
-        "OUTPUTDIR": [ { "value": "../../../../video_processing.gen/sources_1/ip/video_clk_wiz" } ],
+        "OUTPUTDIR": [ { "value": "../../../../dissplay_engine_video.gen/sources_1/ip/video_clk_wiz" } ],
         "SELECTEDSIMMODEL": [ { "value": "" } ],
         "SHAREDDIR": [ { "value": "." } ],
         "SWVERSION": [ { "value": "2024.1" } ],
