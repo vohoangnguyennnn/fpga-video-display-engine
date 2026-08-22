@@ -20,7 +20,11 @@ module framebuffer_subsystem #(
     parameter integer READ_FIFO_DEPTH  = 512,
     parameter integer READ_START_THRESHOLD_BEATS = 256,
     parameter logic [3:0]  WRITE_AXI_ID        = 4'h1,
-    parameter logic [3:0]  READ_AXI_ID         = 4'h2
+    parameter logic [3:0]  READ_AXI_ID         = 4'h2,
+    // Diagnostic-only instrumentation. The release/production build leaves
+    // this disabled so the monitor is pruned completely.
+    parameter bit ENABLE_PERF_MONITOR = 1'b0,
+    parameter integer PERF_MAX_WINDOW_CYCLES = 1_333_333
 ) (
     // Pixel/stream clock domain.
     input  logic         pix_clk,
@@ -108,7 +112,23 @@ module framebuffer_subsystem #(
     output logic         front_buffer_index,
     output logic         back_buffer_index,
     output logic [1:0]   slot0_state,
-    output logic [1:0]   slot1_state
+    output logic [1:0]   slot1_state,
+
+    // UI-domain diagnostic snapshot. These ports are constant zero unless
+    // ENABLE_PERF_MONITOR is selected at build time.
+    output logic         debug_measurement_active,
+    output logic         debug_measurement_valid,
+    output logic         debug_bandwidth_pass,
+    output logic [31:0]  debug_window_cycles,
+    output logic [31:0]  debug_write_beats,
+    output logic [31:0]  debug_read_beats,
+    output logic [31:0]  debug_write_stall_cycles,
+    output logic [31:0]  debug_read_stall_cycles,
+    output logic [31:0]  debug_measurement_count,
+    output logic         debug_swap_interval_valid,
+    output logic [31:0]  debug_swap_interval_cycles,
+    output logic [31:0]  debug_swap_count,
+    output logic [31:0]  debug_repeat_count
 );
 
     logic       wdma_cmd_valid;
@@ -283,5 +303,55 @@ module framebuffer_subsystem #(
                         | control_read_error
                         | control_read_deadline_miss
                         | control_ownership_error;
+
+    generate
+        if (ENABLE_PERF_MONITOR) begin : g_perf_monitor
+            framebuffer_perf_monitor #(
+                .FRAME_BYTES(FRAME_HEIGHT * STRIDE_BYTES),
+                .AXI_DATA_BYTES(framebuffer_pkg::AXI_DATA_BYTES),
+                .MAX_WINDOW_CYCLES(PERF_MAX_WINDOW_CYCLES)
+            ) u_framebuffer_perf_monitor (
+                .ui_clk,
+                .ui_reset,
+                .swap_start(status_swap),
+                .repeat_frame(status_repeat_frame),
+                .write_data_valid(m_axi_wdma_wvalid),
+                .write_data_ready(m_axi_wdma_wready),
+                .read_data_valid(m_axi_rdma_rvalid),
+                .read_data_ready(m_axi_rdma_rready),
+                .write_frame_done(status_write_frame_done),
+                .write_frame_success(status_write_frame_success),
+                .read_fetch_done(status_read_fetch_done),
+                .read_fetch_success(status_read_fetch_success),
+                .debug_measurement_active,
+                .debug_measurement_valid,
+                .debug_bandwidth_pass,
+                .debug_window_cycles,
+                .debug_write_beats,
+                .debug_read_beats,
+                .debug_write_stall_cycles,
+                .debug_read_stall_cycles,
+                .debug_measurement_count,
+                .debug_swap_interval_valid,
+                .debug_swap_interval_cycles,
+                .debug_swap_count,
+                .debug_repeat_count
+            );
+        end else begin : g_no_perf_monitor
+            assign debug_measurement_active = 1'b0;
+            assign debug_measurement_valid = 1'b0;
+            assign debug_bandwidth_pass = 1'b0;
+            assign debug_window_cycles = 32'd0;
+            assign debug_write_beats = 32'd0;
+            assign debug_read_beats = 32'd0;
+            assign debug_write_stall_cycles = 32'd0;
+            assign debug_read_stall_cycles = 32'd0;
+            assign debug_measurement_count = 32'd0;
+            assign debug_swap_interval_valid = 1'b0;
+            assign debug_swap_interval_cycles = 32'd0;
+            assign debug_swap_count = 32'd0;
+            assign debug_repeat_count = 32'd0;
+        end
+    endgenerate
 
 endmodule

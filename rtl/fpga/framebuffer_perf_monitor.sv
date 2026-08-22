@@ -99,17 +99,13 @@ module framebuffer_perf_monitor #(
 
     initial begin
         assert (FRAME_BYTES > 0)
-            else $fatal(1,
-                "framebuffer_perf_monitor FRAME_BYTES must be positive");
+            else $fatal(1,"framebuffer_perf_monitor FRAME_BYTES must be positive");
         assert (AXI_DATA_BYTES > 0)
-            else $fatal(1,
-                "framebuffer_perf_monitor AXI_DATA_BYTES must be positive");
+            else $fatal(1,"framebuffer_perf_monitor AXI_DATA_BYTES must be positive");
         assert ((FRAME_BYTES % AXI_DATA_BYTES) == 0)
-            else $fatal(1,
-                "framebuffer_perf_monitor frame must contain whole AXI beats");
+            else $fatal(1,"framebuffer_perf_monitor frame must contain whole AXI beats");
         assert (FRAME_BEATS > 0)
-            else $fatal(1,
-                "framebuffer_perf_monitor FRAME_BEATS must be positive");
+            else $fatal(1,"framebuffer_perf_monitor FRAME_BEATS must be positive");
         assert (MAX_WINDOW_CYCLES > 0)
             else $fatal(1,"framebuffer_perf_monitor MAX_WINDOW_CYCLES must be positive");
     end
@@ -216,8 +212,7 @@ module framebuffer_perf_monitor #(
                         && read_success_now
                         && (next_write_beats == FRAME_BEATS_VALUE)
                         && (next_read_beats == FRAME_BEATS_VALUE)
-                        && (next_active_cycles
-                            <= MAX_WINDOW_CYCLES_VALUE);
+                        && (next_active_cycles <= MAX_WINDOW_CYCLES_VALUE);
                 end
             end
         end
